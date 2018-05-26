@@ -1,0 +1,180 @@
+
+
+ul {list-style: none;margin: 0;padding: 0}
+
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 80px;
+}
+
+.App-header {
+    background-color: #222;
+    height: 150px;
+    padding: 20px;
+    color: white;
+}
+
+.App-title {
+    font-size: 1.5em;
+}
+
+.App-intro {
+    font-size: large;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    margin: 5px 5px 15px 5px;
+}
+div {
+}
+.group-name {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: slategrey;
+    font-size: 12pt;
+}
+
+svg {
+    max-height: 300px;
+}
+.Pane.vertical.Pane1 {
+    overflow: auto;
+}
+.block-title {
+    padding: 4px 12px;
+    font-size:14pt;
+    background-color: #333333;
+    color: #ffffff;
+    margin: 0 0 1px 0;
+}
+.block-title a {
+    color: #ffffff;
+    text-decoration: none;
+}
+.block-title a:hover,.block-title a:focus,.block-title a:active {
+    color: #ffffff;
+    text-decoration: none;
+}
+.block-content {
+    padding: 10px;
+    margin:1px 0 10px 0;
+}
+.tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.tree li {
+    margin: 0;
+    padding: 0;
+}
+.tree li ul {
+    margin-left: 23px;
+}
+.tree li div {
+    padding: 2px 0;
+}
+.tree li div.selected {
+    background-color: #337ab7;
+    color: #FFFFFF;
+}
+.tree li div.selected > a {
+    color: #FFFFFF;
+}
+
+.link-plus {
+    display: inline-block;
+    padding-left: 8px;
+}
+.link-node {
+    display: inline-block;
+    padding: 0 8px;
+    text-decoration: none;
+}
+.link-folder {
+    font-weight: bold;
+}
+.link-node:hover,.link-node:active,.link-node:focus {
+    text-decoration: none;
+}
+.form-prop {
+    padding: 6px;
+}
+.form-prop input {
+    background-color: #f0f0f0;
+    display: inline-block;
+    width: 100%;
+}
+.form-prop label {
+    display: block;
+    margin: 5px 0 -4px 8px;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 8pt;
+}
+.field-name {
+    width: 100%;
+}
+.field-number {
+    width: 33.3%;
+    display: inline-block;
+}
+.row-label-icon {
+    position: relative;
+    padding-left: 30px;
+}
+.row-label-icon label {
+    position: absolute;
+    font-size: 12pt;
+    left:0;
+    top:6px;
+}
+.row-label-icon  .form-group {
+    margin-bottom: 0;
+}
+.link-right {
+    float: right;
+    margin-right: 10px;
+}
+.hoverable {
+    clear: both;
+}
+.hoverable:hover {
+    background-color: #f0f0f0;
+}
+.tree .dropdown, .block-title .dropdown {
+    float: right;
+}
+.tree .dropdown button, .block-title .dropdown button, .tree .dropdown.open button, .block-title .dropdown.open button {
+    border: 0 none;
+    background: none;
+    box-shadow: none;
+}
+.tree .dropdown .caret {
+    display: none!important;
+}
+.block-title .dropdown button, .block-title .dropdown.open button {
+    color:#ffffff;
+}
+.field-number .btn {
+    padding: 6px 3px;
+}
+.form-group {
+margin: 4px 2px;
+}
+.align-right {
+    text-align: right;
+}
+.field-number ul.dropdown-menu {
+    max-width: 91px;
+    min-width: 91px;
+    width: 91px;
+    overflow: hidden;
+}
+
