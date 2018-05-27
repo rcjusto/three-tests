@@ -23,6 +23,8 @@ switch ($method) {
         }
         break;
     case "PUT":
+        put($folder, $id);
+        break;
     case "POST":
     case "DELETE":
     default:
@@ -71,11 +73,29 @@ function get($folder, $id)
     }
 }
 
-function getAll($folder)
+function put($folder, $id)
 {
-    $folder = __DIR__ . DIRECTORY_SEPARATOR . 'repo' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR;
+    $file = __DIR__ . DIRECTORY_SEPARATOR . 'repo' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $id;
+    $data = file_get_contents('php://input');
+    if (file_exists($file)) {
+        unlink($file);
+    }
+    list(, $data) = explode(';', $data);
+    list(, $data) = explode(',', $data);
+    $data = base64_decode($data);
+
+    if (file_put_contents($file, $data)) {
+        sendResponse(201);
+    } else {
+        error('Error saving file');
+    }
+}
+
+function getAll($folder, $pref = "")
+{
+    $path = __DIR__ . DIRECTORY_SEPARATOR . 'repo' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR;
     $result = array();
-    foreach (glob($folder . "*.*") as $filename) {
+    foreach (glob($path . $pref . "*.*") as $filename) {
         $result[] = basename($filename);
     }
     sendResponse(200, postProcessList($folder, $result));
@@ -91,7 +111,9 @@ function getMessage($code)
     switch ($code) {
         case 200:
             return "OK";
-       case 401:
+        case 201:
+            return "Created";
+        case 401:
             return "Unauthorized";
         default:
             return " Unknown Error";

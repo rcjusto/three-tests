@@ -16,6 +16,7 @@ export const BAR_CONTAINER = {
 export const BAR = {
     height: '100%',
     backgroundColor: 'rgb(255,255,255,0.9)',
+    position: 'relative'
 };
 export const HIDE_BAR = {
     position: 'absolute',
@@ -39,4 +40,48 @@ export const SHOW_BAR = {
     color: '#333333',
     textAlign: 'center',
     paddingTop: '4px'
+};
+export const BAR_PROPS = {
+    paddingTop: '32px',
+    paddingBottom: '32px',
+    height: '100%'
+};
+export const BAR_TITLE = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '32px'
+};
+export const BAR_FOOTER = {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: '32px',
+    width: '100%',
+    padding: '6px'
+};
+export const NAME_ICON = {
+    fontSize: '15pt',
+    display:'inline-block',
+    margin: '8px 5px 0 8px',
+    float: 'left',
+    width: '22px',
+    textAlign: 'center',
+    color: '#333333',
+    outline: 0
+};
+export const NAME = {
+    fontSize: '14pt',
+    display:'inline-block',
+    padding: '8px 0 0 0',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '240px',
+    color: '#333333',
+    outline: 0
+};
+export const BOTTOM_LINK = {
+    fontSize: '16pt',
+    padding: '4px'
 };

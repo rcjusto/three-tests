@@ -72,3 +72,6 @@ html, body, #root {
 .properties-block div.form-control {
     padding-top: 6px;
 }
+h4.modal-title {
+    font-size: 16pt;
+}

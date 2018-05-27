@@ -89,6 +89,11 @@ export default class TreeView extends Component {
             onConfirm: (name, type) => {
                 const el = model.addNewElement(type, node ? node.id : null);
                 el.name = name;
+                const newEl = model.elements[el.id];
+                if (newEl) {
+                    newEl.size = [1,1,1];
+                    model._triggerChange();
+                }
             }
         });
     };

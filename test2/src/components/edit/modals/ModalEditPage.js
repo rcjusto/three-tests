@@ -3,19 +3,39 @@ import PropTypes from 'prop-types';
 import Modal from "react-bootstrap/es/Modal";
 import {render, unmountComponentAtNode} from 'react-dom';
 
-class ModalAddFolder extends Component {
+class ModalEditPage extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.state = {
-            name: ''
+            name: '',
+            desc: ''
         };
+        this.onChangeValue = this.onChangeValue.bind(this);
     }
 
     static propTypes = {
         onConfirm: PropTypes.func,
         onCancel: PropTypes.func
     };
+
+    componentDidMount() {
+        console.log('componentDidMount');
+        this.setState({
+            name: this.props.name,
+            desc: this.props.desc
+        })
+    }
+
+    componentWillUpdate(nextProps) {
+        console.log('componentWillUpdate');
+        if (nextProps.name !== this.props.name || nextProps.desc !== this.props.desc) {
+            this.setState({
+                name: nextProps.name,
+                desc: nextProps.desc
+            })
+        }
+    }
 
     onSubmit = (e) => {
         e.preventDefault();
@@ -25,7 +45,10 @@ class ModalAddFolder extends Component {
     onClickConfirm = () => {
         if (this.state.name.trim().length > 0) {
             if (this.props.onConfirm) {
-                this.props.onConfirm(this.state.name);
+                this.props.onConfirm({
+                    name: this.state.name,
+                    desc: this.state.desc
+                });
             }
             this.close();
         }
@@ -43,20 +66,28 @@ class ModalAddFolder extends Component {
     };
 
     onChangeValue = (event) => {
-        this.setState({name: event.target.value});
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
     };
 
     render() {
         return (<div>
             <Modal show={true} onHide={this.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Folder</Modal.Title>
+                    <Modal.Title>Edit Page Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={this.onSubmit}>
-                        <h4>Select a folder name</h4>
+                        <h4>Name</h4>
                         <div>
-                            <input ref={input => input && input.focus()} type="text" className="form-control" value={this.state.name} onChange={this.onChangeValue}/>
+                            <input name="name" type="text" className="form-control" value={this.state.name} onChange={this.onChangeValue}/>
+                        </div>
+                        <br/>
+                        <h4>Description</h4>
+                        <div>
+                            <textarea name="desc" className="form-control" value={this.state.desc} onChange={this.onChangeValue}/>
                         </div>
                     </form>
                 </Modal.Body>
@@ -71,19 +102,19 @@ class ModalAddFolder extends Component {
 
 function createElementReconfirm(properties) {
     const divTarget = document.createElement('div');
-    divTarget.id = 'modal-add-folder';
+    divTarget.id = 'modal-edit-page';
     document.body.appendChild(divTarget);
-    render(<ModalAddFolder {...properties} />, divTarget);
+    render(<ModalEditPage {...properties} />, divTarget);
 }
 
 function removeElementReconfirm() {
-    const target = document.getElementById('modal-add-folder');
+    const target = document.getElementById('modal-edit-page');
     setTimeout(() => {
         unmountComponentAtNode(target);
         target.parentNode.removeChild(target);
     });
 }
 
-export function modalAddFolder(properties) {
+export function modalEditPage(properties) {
     createElementReconfirm(properties);
 }

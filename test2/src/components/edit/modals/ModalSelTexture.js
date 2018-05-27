@@ -30,7 +30,7 @@ class ModalSelTexture extends Component {
         return (<div>
             <Modal show={true} onHide={this.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Select a Texture</Modal.Title>
+                    <Modal.Title>{this.props.title || 'Select a Texture'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={this.onSubmit}>

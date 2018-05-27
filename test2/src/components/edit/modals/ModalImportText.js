@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from "react-bootstrap/es/Modal";
 import {render, unmountComponentAtNode} from 'react-dom';
 
-class ModalAddFolder extends Component {
+class ModalImportText extends Component {
 
     constructor(props, context) {
         super(props, context);
@@ -50,13 +50,12 @@ class ModalAddFolder extends Component {
         return (<div>
             <Modal show={true} onHide={this.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Folder</Modal.Title>
+                    <Modal.Title>{this.props.title || 'Enter Text'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={this.onSubmit}>
-                        <h4>Select a folder name</h4>
                         <div>
-                            <input ref={input => input && input.focus()} type="text" className="form-control" value={this.state.name} onChange={this.onChangeValue}/>
+                            <textarea style={{maxWidth: '100%',minWidth:'100%',minHeight:'400px'}} ref={input => input && input.focus()} className="form-control" value={this.state.name} onChange={this.onChangeValue}/>
                         </div>
                     </form>
                 </Modal.Body>
@@ -71,19 +70,19 @@ class ModalAddFolder extends Component {
 
 function createElementReconfirm(properties) {
     const divTarget = document.createElement('div');
-    divTarget.id = 'modal-add-folder';
+    divTarget.id = 'modal-import-text';
     document.body.appendChild(divTarget);
-    render(<ModalAddFolder {...properties} />, divTarget);
+    render(<ModalImportText {...properties} />, divTarget);
 }
 
 function removeElementReconfirm() {
-    const target = document.getElementById('modal-add-folder');
+    const target = document.getElementById('modal-import-text');
     setTimeout(() => {
         unmountComponentAtNode(target);
         target.parentNode.removeChild(target);
     });
 }
 
-export function modalAddFolder(properties) {
+export function modalImportText(properties) {
     createElementReconfirm(properties);
 }

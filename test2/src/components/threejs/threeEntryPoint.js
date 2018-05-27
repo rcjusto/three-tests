@@ -40,6 +40,10 @@ export default (containerElement, onElementClicked) => {
         sceneManager.update();
     }
 
+    function getSnapShot() {
+        return sceneManager.getSnapShot()
+    }
 
-    return {updateData, addData}
+
+    return {updateData, addData, getSnapShot}
 }

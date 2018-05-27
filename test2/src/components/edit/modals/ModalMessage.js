@@ -3,14 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from "react-bootstrap/es/Modal";
 import {render, unmountComponentAtNode} from 'react-dom';
 
-class ModalAddFolder extends Component {
-
-    constructor(props, context) {
-        super(props, context);
-        this.state = {
-            name: ''
-        };
-    }
+class ModalMessage extends Component {
 
     static propTypes = {
         onConfirm: PropTypes.func,
@@ -23,12 +16,10 @@ class ModalAddFolder extends Component {
     };
 
     onClickConfirm = () => {
-        if (this.state.name.trim().length > 0) {
-            if (this.props.onConfirm) {
-                this.props.onConfirm(this.state.name);
-            }
-            this.close();
+        if (this.props.onConfirm) {
+            this.props.onConfirm();
         }
+        this.close();
     };
 
     onClickCancel = () => {
@@ -42,28 +33,25 @@ class ModalAddFolder extends Component {
         removeElementReconfirm();
     };
 
-    onChangeValue = (event) => {
-        this.setState({name: event.target.value});
-    };
-
     render() {
         return (<div>
             <Modal show={true} onHide={this.close}>
+                {this.props.title &&
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Folder</Modal.Title>
+                    <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
+                }
                 <Modal.Body>
-                    <form onSubmit={this.onSubmit}>
-                        <h4>Select a folder name</h4>
-                        <div>
-                            <input ref={input => input && input.focus()} type="text" className="form-control" value={this.state.name} onChange={this.onChangeValue}/>
-                        </div>
-                    </form>
+                    <h4 className="text-center">{this.props.message}</h4>
                 </Modal.Body>
+                {this.props.buttons &&
                 <Modal.Footer>
-                    <button type="button" disabled={this.state.name.trim().length<1}  className="btn btn-primary" ref='confirm' onClick={this.onClickConfirm}>OK</button>
+                    <button type="button" className="btn btn-primary" ref='confirm' onClick={this.onClickConfirm}>OK</button>
+                    {this.props.buttons.cancel &&
                     <button type="button" className="btn btn-default" onClick={this.onClickCancel}>Cancel</button>
+                    }
                 </Modal.Footer>
+                }
             </Modal></div>);
     }
 
@@ -71,19 +59,19 @@ class ModalAddFolder extends Component {
 
 function createElementReconfirm(properties) {
     const divTarget = document.createElement('div');
-    divTarget.id = 'modal-add-folder';
+    divTarget.id = 'modal-message';
     document.body.appendChild(divTarget);
-    render(<ModalAddFolder {...properties} />, divTarget);
+    render(<ModalMessage {...properties} />, divTarget);
 }
 
 function removeElementReconfirm() {
-    const target = document.getElementById('modal-add-folder');
+    const target = document.getElementById('modal-message');
     setTimeout(() => {
         unmountComponentAtNode(target);
         target.parentNode.removeChild(target);
     });
 }
 
-export function modalAddFolder(properties) {
+export function modalMessage(properties) {
     createElementReconfirm(properties);
 }

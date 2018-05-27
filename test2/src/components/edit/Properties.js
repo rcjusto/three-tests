@@ -56,7 +56,7 @@ export default class Properties extends Component {
         if (element.url !== event.target.value) {
             element.url = event.target.value;
             this.setState({element});
-            this.props.model._triggerListChange();
+            this.props.model._triggerChange({tree: true, list:true});
         }
     }
 
@@ -84,6 +84,7 @@ export default class Properties extends Component {
         if (!element.size) element.size = [0, 0, 0];
         element.size[index] = value;
         this.setState({element});
+        this.props.model._triggerChange();
     }
 
     componentDidMount() {

@@ -22,7 +22,7 @@ export default class MainModel {
         if (Utils.isArray(json.tree)) this.tree = json.tree;
         if (Utils.isObject(json.elements)) this.elements = json.elements;
         if (Utils.isObject(json.folders)) this.folders = json.folders;
-        this._triggerChange({list:true,tree:true});
+        this._triggerChange();
     }
 
     toJSON() {
@@ -62,7 +62,6 @@ export default class MainModel {
         } else {
             this.tree.push(node);
         }
-        this._triggerChange({list:true,tree:true});
         return node;
     }
 
@@ -92,11 +91,9 @@ export default class MainModel {
     delElement(id) {
 
         const treeNode = this._findNodeRecursive(id);
-        console.log(treeNode);
         const ids = this._getRecursiveNodes(treeNode).map(node => {
             return node.id
         });
-        console.log(ids);
         this._deleteTreeNode(treeNode);
         ids.forEach(id => {
             if (this.elements[id]) {
@@ -210,6 +207,15 @@ export default class MainModel {
         }
     }
 
+    replaceTexture(oldTexture, newTexture) {
+        Object.values(this.elements).forEach(el => {
+            if (el.texture === oldTexture) {
+                el.texture = newTexture;
+            }
+        });
+        this._triggerChange();
+    }
+
     _checkVisibility = (id) => {
         if (this.elements[id]) {
             return !!this.elements[id].visible;
@@ -287,8 +293,11 @@ export default class MainModel {
         }
     };
 
-    _triggerChange = (changes) => {
+    _triggerChange = (changes = null) => {
         if (this.onChanged) {
+            if (changes == null) {
+                changes = {tree: true, list: true};
+            }
             this.onChanged(changes);
         }
     };

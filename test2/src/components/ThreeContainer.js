@@ -16,6 +16,10 @@ export default class ThreeContainer extends Component {
         this.three.updateData(this.props.data);
     }
 
+    getSnapShot() {
+        return this.three.getSnapShot();
+    }
+
     render () {
         return (
             <div style={{height: '100%'}} ref={element => this.threeRootElement = element} />

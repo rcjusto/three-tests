@@ -8,10 +8,24 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
         let mesh;
 
         function update() {
-            mesh.position.set(element.position[0], element.position[1], element.position[2]);
-            if (element.scale) mesh.scale.set(element.scale, element.scale, element.scale);
+            const size = element.size || [0,0,0];
+            switch (element.type) {
+                case Main.TYPE_BOX:
+                    mesh.position.set(element.position[0] + size[0]/2, element.position[1] + size[1]/2, element.position[2]+size[2]/2);
+                    break;
+                case Main.TYPE_SPHERE:
+                    mesh.position.set(element.position[0] + size[0], element.position[1] + size[0], element.position[2]+size[0]/2);
+                    break;
+                case Main.TYPE_CYLINDER:
+                    mesh.position.set(element.position[0] + size[0]/2, element.position[1] + size[0]/2, element.position[2]+size[2]/2);
+                    break;
+                case Main.TYPE_JSON:
+                    mesh.position.set(element.position[0] + size[0]/2, element.position[1] + size[1]/2, element.position[2]+size[2]/2);
+                    mesh.scale.set(element.size[0], element.size[1], element.size[2]);
+                    break;
+                default:
+            }
             if (element.rotation) mesh.rotation.set(element.rotation[0], element.rotation[1], element.rotation[2]);
-            if (element.size) mesh.scale.set(element.size[0], element.size[1], element.size[2]);
         }
 
         if (element.type === Main.TYPE_JSON && element.url) {
@@ -34,19 +48,22 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
 
         } else {
 
+            const w = element.size ? element.size[0] : 1;
+            const h = element.size ? element.size[1] : 1;
+            const d = element.size ? element.size[2] : 1;
             let geometry;
             switch (element.type.toLowerCase()) {
                 case Main.TYPE_CYLINDER:
-                    geometry = new THREE.CylinderBufferGeometry(1, 1, 1, 128);
+                    geometry = new THREE.CylinderBufferGeometry(w, w, h, 128);
                     break;
                 case Main.TYPE_BOX:
-                    geometry = new THREE.BoxBufferGeometry(1,1,1);
+                    geometry = new THREE.BoxBufferGeometry(w,h,d);
                     break;
                 case Main.TYPE_SPHERE:
-                    geometry = new THREE.SphereBufferGeometry(1, 128, 128);
+                    geometry = new THREE.SphereBufferGeometry(w, 128, 128);
                     break;
                 default:
-                    geometry = new THREE.IcosahedronBufferGeometry(1, 2);
+                    geometry = new THREE.IcosahedronBufferGeometry(w, 128);
                     break;
 
             }
