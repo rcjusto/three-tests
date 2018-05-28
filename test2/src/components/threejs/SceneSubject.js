@@ -71,14 +71,13 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
             if (element.texture) {
                 textures.getTexture(element.texture)
                     .then(texture => {
-
-                        let material = new THREE.MeshStandardMaterial({flatShading: true, map: texture,  color: color});
-                        if (element.selected) {
-                            material = new THREE.MeshStandardMaterial({flatShading: true, color: color});
-                        }
+                        const material = (element.selected)
+                            ? new THREE.MeshStandardMaterial({flatShading: true, color: color})
+                            : new THREE.MeshStandardMaterial({flatShading: true, map: texture});
 
                         mesh = new THREE.Mesh(geometry, material);
                         mesh.elementID = element.id;
+
                         resolve({mesh: mesh, update: update});
                     })
                     .catch(() => {

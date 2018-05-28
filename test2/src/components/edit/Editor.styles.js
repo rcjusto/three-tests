@@ -58,7 +58,8 @@ export const BAR_FOOTER = {
     left: 0,
     height: '32px',
     width: '100%',
-    padding: '6px'
+    padding: '4px 6px',
+    border: '1px solid #eeeeee'
 };
 export const NAME_ICON = {
     fontSize: '15pt',
@@ -82,6 +83,6 @@ export const NAME = {
     outline: 0
 };
 export const BOTTOM_LINK = {
-    fontSize: '16pt',
-    padding: '4px'
+    fontSize: '14pt',
+    padding: '0 4px'
 };

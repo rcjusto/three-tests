@@ -4,7 +4,7 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 import * as styles from "./TreeView.styles";
 import {faCircle, faSquare, faClone} from "@fortawesome/fontawesome-free-regular/index.es";
-import {faBan, faCopy, faExpand, faEye, faFolder, faFolderOpen, faPaste, faPlusCircle, faPlusSquare, faTrash} from "@fortawesome/fontawesome-free-solid/index.es";
+import {faBan, faCompress, faCopy, faExpand, faEye, faFolder, faFolderOpen, faPaste, faPlusCircle, faPlusSquare, faTrash} from "@fortawesome/fontawesome-free-solid/index.es";
 import {DropdownButton, MenuItem} from "react-bootstrap";
 import {modalAddFolder} from "./modals/ModalAddFolder";
 import {modalAddElement} from "./modals/ModalAddElement";
@@ -18,6 +18,7 @@ export default class TreeView extends Component {
         };
         this.toggleCollapse = this.toggleCollapse.bind(this);
         this.clipboardEmpty = this.clipboardEmpty.bind(this);
+        this.collapseAll = this.collapseAll.bind(this);
     }
 
     componentDidMount() {
@@ -27,6 +28,15 @@ export default class TreeView extends Component {
     toggleCollapse = (node) => {
         const {collapsed} = this.state;
         collapsed[node.id] = !collapsed[node.id];
+        this.setState({collapsed});
+    };
+
+    collapseAll = () => {
+        const collapsed = {};
+        const {model} = this.props;
+        model.tree.forEach((n) => {
+            collapsed[n.id] = true;
+        });
         this.setState({collapsed});
     };
 
@@ -230,6 +240,7 @@ export default class TreeView extends Component {
                 <div className="bar-block-name">
                     <a className="right-link" href="/" onClick={(e)=>{e.preventDefault();this.addFolder(null);}} title="Add Folder"><FontAwesomeIcon icon={faFolder}/></a>
                     <a className="right-link" href="/" onClick={(e)=>{e.preventDefault();this.addElement(null);}} title="Add Object"><FontAwesomeIcon icon={faPlusSquare}/></a>
+                    <a className="right-link" href="/" onClick={(e)=>{e.preventDefault();this.collapseAll();}} title="Collapse All"><FontAwesomeIcon icon={faCompress}/></a>
                     Objects
                 </div>
                 <div style={styles.CONTAINER} className="tree">
