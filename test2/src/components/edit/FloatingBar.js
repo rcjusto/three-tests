@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import * as styles from "./FloatingBar.styles";
 import TreeView from "./TreeView";
 import Properties from "./Properties";
+import CutList from "./CutList";
 
 class FloatingBar extends Component {
 
@@ -36,6 +37,8 @@ class FloatingBar extends Component {
                 {selected &&
                 <Properties model={model} selected={selected}/>
                 }
+
+                <CutList model={model}/>
 
             </div>
         );
