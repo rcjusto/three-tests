@@ -28,7 +28,7 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
             if (element.rotation) mesh.rotation.set(element.rotation[0], element.rotation[1], element.rotation[2]);
         }
 
-        if (element.type === Main.TYPE_JSON && element.url) {
+        if (element.type === Main.TYPE_JSON && element.url && element.url.length>0) {
 
             jsonObjects.getJsonObject(element.url)
                 .then(data => {
@@ -56,14 +56,11 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
                 case Main.TYPE_CYLINDER:
                     geometry = new THREE.CylinderBufferGeometry(w, w, h, 128);
                     break;
-                case Main.TYPE_BOX:
-                    geometry = new THREE.BoxBufferGeometry(w,h,d);
-                    break;
                 case Main.TYPE_SPHERE:
                     geometry = new THREE.SphereBufferGeometry(w, 128, 128);
                     break;
                 default:
-                    geometry = new THREE.IcosahedronBufferGeometry(w, 128);
+                    geometry = new THREE.BoxBufferGeometry(w,h,d);
                     break;
 
             }

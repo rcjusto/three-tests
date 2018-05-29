@@ -1,7 +1,8 @@
 export const CONTAINER = {
     width: '100%',
     height: '100%',
-    position: 'relative'
+    position: 'relative',
+    overflow: 'hidden'
 };
 export const CANVAS = {
     width: '100%',

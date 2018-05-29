@@ -94,6 +94,7 @@ export default class MainModel {
         const ids = this._getRecursiveNodes(treeNode).map(node => {
             return node.id
         });
+        console.log(ids);
         this._deleteTreeNode(treeNode);
         ids.forEach(id => {
             if (this.elements[id]) {
@@ -103,7 +104,7 @@ export default class MainModel {
                 delete this.folders[id];
             }
         });
-        this._triggerChange({list:true,tree:true});
+        this._triggerChange();
     }
 
     getElementList() {
@@ -255,7 +256,7 @@ export default class MainModel {
         let found = null;
         subFolders.forEach(folder => {
             const res = this._findNodeRecursive(id, folder.children);
-            if (res != null) {
+            if (res !== null) {
                 found = res;
             }
         });
@@ -270,7 +271,7 @@ export default class MainModel {
             result.push(node);
             if (node.type === MainModel.TYPE_FOLDER) {
                 node.children.forEach(c => {
-                    result.concat(this._getRecursiveNodes(c));
+                    result = result.concat(this._getRecursiveNodes(c));
                 });
             }
         }
@@ -278,18 +279,18 @@ export default class MainModel {
     };
 
     // deletes a node from the model tree
-    _deleteTreeNode = (node, list = null) => {
-        if (!list) list = this.tree;
+    _deleteTreeNode = (node) => {
+        let list = this.tree;
+        if (node.parentId) {
+            const parentNode = this._findNodeRecursive(node.parentId);
+            if (parentNode && parentNode.children) {
+                list = parentNode.children;
+            }
+        }
+
         const ind = list.indexOf(node);
         if (ind > -1) {
-            list.splice(ind, 1)
-        } else {
-            const subFolders = list.filter(n => {
-                return n.type === MainModel.TYPE_FOLDER
-            });
-            subFolders.forEach(folder => {
-                this._deleteTreeNode(node, folder.children);
-            });
+            list.splice(ind, 1);
         }
     };
 

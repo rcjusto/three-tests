@@ -4,10 +4,10 @@ import Modal from "react-bootstrap/es/Modal";
 import {render, unmountComponentAtNode} from 'react-dom';
 import MainModel from "../../../models/Main";
 import * as styles from "./ModalAddElement.styles";
-import img_sphere from './sphere.png';
-import img_box from './cube.png';
-import img_cyl from './cylinder.png';
-import img_dots from './points.png';
+import img_sphere from '../../../images/sphere.png';
+import img_box from '../../../images/cube.png';
+import img_cyl from '../../../images/cylinder.png';
+import img_dots from '../../../images/points.png';
 
 class ModalAddElement extends Component {
 

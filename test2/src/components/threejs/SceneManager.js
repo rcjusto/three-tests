@@ -22,6 +22,7 @@ export default (canvas, callbacks) => {
     const renderer = buildRender(screenDimensions);
     const camera = buildCamera(screenDimensions);
     const controls = new OrbitControls(camera, renderer.domElement);
+
     camera.position.set(0, 20, 100);
     controls.enableKeys = false;
     if (camera.lookAt && camera.lookAt.length === 3) {

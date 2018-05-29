@@ -31,3 +31,8 @@ export const COL_1_1 = {
     display: 'inline-block',
     float: 'left'
 };
+export const IMG_TYPE = {
+    width: '20px',
+    marginTop: '-6px',
+    display: 'inline-block'
+};

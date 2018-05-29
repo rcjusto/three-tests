@@ -5,11 +5,15 @@ import * as styles from "./Properties.styles";
 import DropDown from "./Dropdown";
 import {LABELED_ROW} from "./Properties.styles";
 import {Button, DropdownButton, FormControl, InputGroup, MenuItem} from "react-bootstrap";
-import {faCaretDown, faCubes, faExpandArrowsAlt, faImage, faLocationArrow, faTag, faUndoAlt} from "@fortawesome/fontawesome-free-solid/index.es";
+import {faCaretDown, faCubes, faExpandArrowsAlt, faImage, faLocationArrow, faFolder, faUndoAlt} from "@fortawesome/fontawesome-free-solid/index.es";
 import MainModel from "../../models/Main";
 import Textures from "../../services/Textures";
 import {modalSelTexture} from "./modals/ModalSelTexture";
 import JSONModels from "../../services/JSONModels";
+import img_sphere from '../../images/sphere.png';
+import img_box from '../../images/cube.png';
+import img_cyl from '../../images/cylinder.png';
+import img_dots from '../../images/points.png';
 
 export default class Properties extends Component {
 
@@ -115,12 +119,24 @@ export default class Properties extends Component {
         }
     }
 
+    getImageType(element) {
+        switch (element.type) {
+            case MainModel.TYPE_CYLINDER:
+                return img_cyl;
+            case MainModel.TYPE_SPHERE:
+                return img_sphere;
+            case MainModel.TYPE_JSON:
+                return img_dots;
+            default:
+                return img_box;
+        }
+    }
+
     render() {
         let {element, node, objects} = this.state;
         const styleTexture = {
             backgroundImage: (element && element.texture) ? 'url(' + Textures.getURL(element.texture) + ')' : 'none'
         };
-
 
         return (
             <div className="bar-block-next">
@@ -129,7 +145,12 @@ export default class Properties extends Component {
                     {node &&
                     <div style={LABELED_ROW} className="clearfix">
                         <div style={styles.LABELED_ROW_LABEL}>
-                            <FontAwesomeIcon icon={faTag}/>
+                            {element.type!==MainModel.TYPE_FOLDER &&
+                            <img src={this.getImageType(element)} style={styles.IMG_TYPE} alt=" "/>
+                            }
+                            {element.type===MainModel.TYPE_FOLDER &&
+                            <FontAwesomeIcon icon={faFolder}/>
+                            }
                         </div>
                         <div style={styles.COL_1_1}>
                             <FormControl type="text" name="name" value={node.name} onChange={this.handleNameChange}/>
