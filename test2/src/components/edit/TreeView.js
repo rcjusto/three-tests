@@ -8,6 +8,7 @@ import {faBan, faCompress, faCopy, faExpand, faEye, faFolder, faFolderOpen, faPa
 import {DropdownButton, MenuItem} from "react-bootstrap";
 import {modalAddFolder} from "./modals/ModalAddFolder";
 import {modalAddElement} from "./modals/ModalAddElement";
+import Utils from "../../services/Utils";
 
 export default class TreeView extends Component {
 
@@ -16,6 +17,7 @@ export default class TreeView extends Component {
         this.state = {
             collapsed: {}
         };
+        this.dragging = false;
         this.toggleCollapse = this.toggleCollapse.bind(this);
         this.clipboardEmpty = this.clipboardEmpty.bind(this);
         this.collapseAll = this.collapseAll.bind(this);
@@ -133,6 +135,61 @@ export default class TreeView extends Component {
         return model.clipboard == null;
     };
 
+    onDragStart(event, node) {
+        if (node) {
+            this.dragging = true;
+            const nodeStr = JSON.stringify(node);
+            event.dataTransfer.setData("node", nodeStr);
+        } else {
+            event.preventDefault();
+        }
+    }
+
+    onDragOver(event) {
+        event.preventDefault();
+    }
+
+    onDragEnter(event) {
+        if (this.dragging && Utils.hasClass(event.target, 'can-drop')) {
+           Utils.addClass(event.target, 'drop-here');
+        }
+    }
+
+    onDragLeave(event) {
+        if (Utils.hasClass(this.dragging && event.target, 'drop-here')) {
+            Utils.delClass(event.target, 'drop-here');
+        }
+    }
+
+    onDrop(event, parent) {
+        if (this.dragging && Utils.hasClass(event.target, 'drop-here')) {
+            Utils.delClass(event.target, 'drop-here');
+            this.dragging = false;
+
+            const {model} = this.props;
+            let node = JSON.parse(event.dataTransfer.getData("node"));
+
+            //delete old node
+            const nodeToDelete = model._findNodeRecursive(node.id);
+            model._deleteTreeNode(nodeToDelete);
+
+            //insert into new position
+            model._triggerChange({list: false, tree: true});
+            if (!parent) {
+                model.tree.unshift(node);
+                node.parentId = null;
+            } else if (parent.type === MainModel.TYPE_FOLDER) {
+                parent.children.unshift(node);
+                node.parentId = parent.id;
+            } else {
+                const parentNode = model._findNodeRecursive(parent.parentId);
+                const index = parentNode.children.indexOf(parent);
+                parentNode.children.splice(index+1, 0, node);
+                node.parentId = parentNode.id;
+            }
+        }
+    }
+
     render() {
         const {model} = this.props;
         const {collapsed} = this.state;
@@ -197,33 +254,51 @@ export default class TreeView extends Component {
 
         const elemNode = (node, index) => {
             return (<li key={index} style={styles.LI_ELEMENT}>
-                <div style={styles.UNSELECTED} className={this.isNodeSelected(node) ? 'selected' : 'hoverable'}>
+                <div style={styles.UNSELECTED}
+                     className={this.isNodeSelected(node) ? 'selected can-drop' : 'hoverable can-drop'}
+                     onDragEnter={(e)=>this.onDragEnter(e, node)}
+                     onDragLeave={(e)=>this.onDragLeave(e, node)}
+                     onDragOver={(e) => this.onDragOver(e, node)}
+                     onDrop={(e) => this.onDrop(e,node)}
+                >
                     {menu(node)}
                     {visible(node)}
-                    <a href="/" onClick={(e) => {
-                        e.preventDefault();
-                        this.selectNode(node)
-                    }} style={styles.LINK_FILE}>{node.name || '[no name]'}</a>
+                    <a href="/"
+                       onClick={(e) => {e.preventDefault();this.selectNode(node)}}
+                       style={styles.LINK_FILE}
+                       draggable
+                       onDragStart={(e) => this.onDragStart(e, node)}
+                    >{node.name || '[no name]'}</a>
                 </div>
             </li>)
         };
 
         const folderNode = (node, index) => {
             return (<li key={index} style={styles.LI_FOLDER}>
-                <div style={styles.UNSELECTED} className={this.isNodeSelected(node) ? 'selected' : 'hoverable'}>
+                <div style={styles.UNSELECTED}
+                     className={this.isNodeSelected(node) ? 'selected can-drop' : 'hoverable can-drop'}
+                     onDragEnter={(e)=>this.onDragEnter(e, node)}
+                     onDragLeave={(e)=>this.onDragLeave(e, node)}
+                     onDragOver={(e) => this.onDragOver(e, node)}
+                     onDrop={(e) => this.onDrop(e,node)}
+                >
+
                     {menu(node)}
                     {visible(node)}
                     {addElement(node)}
-                    <a href="/" onClick={(e) => {
-                        e.preventDefault();
-                        this.toggleCollapse(node)
-                    }} style={styles.LINK_TREE}>
+                    <a href="/"
+                       onClick={(e) => {e.preventDefault();this.toggleCollapse(node)}}
+                       style={styles.LINK_TREE}
+                    >
                         <FontAwesomeIcon icon={this.getIcon(node)}/>
                     </a>
                     <a href="/" onClick={(e) => {
                         e.preventDefault();
                         this.selectNode(node)
-                    }} style={styles.LINK_FOLDER}>{node.name || '[no name]'}</a>
+                    }} style={styles.LINK_FOLDER}
+                       draggable
+                       onDragStart={(e) => this.onDragStart(e, node)}
+                    >{node.name || '[no name]'}</a>
                 </div>
                 <ul style={styles.UL}>
                     {!collapsed[node.id] && node.children.map((n, ind) => {
@@ -243,6 +318,12 @@ export default class TreeView extends Component {
                     <a className="right-link" href="/" onClick={(e)=>{e.preventDefault();this.collapseAll();}} title="Collapse All"><FontAwesomeIcon icon={faCompress}/></a>
                     Objects
                 </div>
+                <div style={styles.SEPARATOR} className="can-drop"
+                    onDragEnter={(e)=>this.onDragEnter(e, null)}
+                    onDragLeave={(e)=>this.onDragLeave(e, null)}
+                    onDragOver={(e) => this.onDragOver(e, null)}
+                    onDrop={(e) => this.onDrop(e, null)}
+                />
                 <div style={styles.CONTAINER} className="tree">
                     <ul style={styles.MAIN_UL}>
                         {model.getElementTree().map((node, index) => {

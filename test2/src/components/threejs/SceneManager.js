@@ -25,11 +25,6 @@ export default (canvas, callbacks) => {
 
     camera.position.set(0, 20, 100);
     controls.enableKeys = false;
-    if (camera.lookAt && camera.lookAt.length === 3) {
-        controls.target = new THREE.Vector3(camera.lookAt[0], camera.lookAt[1], camera.lookAt[2]);
-    } else {
-        controls.target = new THREE.Vector3(50, 0, 0);
-    }
     controls.update();
     let sceneLights = createSceneLights(scene);
     let sceneSubjects = [];
@@ -124,16 +119,21 @@ export default (canvas, callbacks) => {
 
         // create an array containing all objects in the scene with which the ray intersects
         const intersects = ray.intersectObjects(scene.children);
-        if (intersects.length>0 && intersects[0].object.elementID) {
-            if (callbacks['mousedown']) {
-                callbacks['mousedown']({
-                    id: intersects[0].object.elementID,
-                    ctrlKey: event.ctrlKey,
-                    altKey: event.altKey,
-                    shiftKey: event.shiftKey
-                });
-            }
+        if (callbacks['mousedown']) {
+            callbacks['mousedown']({
+                id: intersects.length > 0 && intersects[0].object.elementID ? intersects[0].object.elementID : null,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey,
+                shiftKey: event.shiftKey
+            });
         }
+    }
+
+    function getCameraAxis() {
+        const v = [camera.position.x - controls.target.x,camera.position.y - controls.target.y, camera.position.z - controls.target.z];
+        if (v[0] >= v[1] && v[0] >= v[2]) return 'X';
+        else if (v[1] >= v[0] && v[1] >= v[2]) return 'Y';
+        else return 'Z';
     }
 
     return {
@@ -141,6 +141,7 @@ export default (canvas, callbacks) => {
         onWindowResize,
         updateSceneSubjects,
         addSceneSubject,
-        getSnapShot
+        getSnapShot,
+        getCameraAxis
     }
 }

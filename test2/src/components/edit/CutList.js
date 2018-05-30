@@ -86,7 +86,7 @@ export default class CutList extends Component {
     render() {
         const {model} = this.props;
         const list = this.generateList(model);
-        return <div className="bar-block">
+        return list && list.length>0 ? (<div className="bar-block">
             <div className="bar-block-name">
                 <a className="right-link" href="/" onClick={(e) => {
                     e.preventDefault();
@@ -104,6 +104,7 @@ export default class CutList extends Component {
                     })}
                 </ul>
             </div>
-        </div>;
+        </div>)
+            : (<span/>);
     }
 }

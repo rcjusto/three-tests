@@ -3,8 +3,8 @@ export default (containerElement, onElementClicked) => {
 
     const canvas = createCanvas(document, containerElement);
     const sceneManager = new SceneManager(canvas, {
-        mousedown: (id) => {
-            onElementClicked(id);
+        mousedown: (data) => {
+            onElementClicked(data);
         }
     });
 
@@ -44,6 +44,10 @@ export default (containerElement, onElementClicked) => {
         return sceneManager.getSnapShot()
     }
 
+    function getCameraAxis() {
+        return sceneManager.getCameraAxis()
+    }
 
-    return {updateData, addData, getSnapShot}
+
+    return {updateData, addData, getSnapShot, getCameraAxis}
 }

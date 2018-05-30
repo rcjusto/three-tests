@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import threeEntryPoint from './threejs/threeEntryPoint';
+import threeEntryPoint from './threeEntryPoint';
 
 export default class ThreeContainer extends Component {
 
-    onElementClicked = (id) => {
-        this.props.onElementClicked(id);
+    onElementClicked = (data) => {
+        this.props.onElementClicked(data);
     };
 
     componentDidMount() {
@@ -18,6 +18,10 @@ export default class ThreeContainer extends Component {
 
     getSnapShot() {
         return this.three.getSnapShot();
+    }
+
+    getCameraAxis() {
+        return this.three.getCameraAxis();
     }
 
     render () {

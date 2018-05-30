@@ -40,5 +40,26 @@ export default class Utils {
         return this.getType(object) === this.TYPE_OBJECT;
     }
 
+    static hasClass(element, classname) {
+        let arr = element.className ? element.className.split(' ') : [];
+        return arr.indexOf(classname)>-1;
+    }
+
+    static addClass(element, classname) {
+        let arr = element.className ? element.className.split(' ') : [];
+        if (arr.indexOf(classname)<0) {
+            arr.push(classname);
+        }
+        element.className = arr.join(' ');
+    }
+
+    static delClass(element, classname) {
+        let arr = element.className ? element.className.split(' ') : [];
+        const index = arr.indexOf(classname);
+        if (index>-1) {
+            arr.splice(index,1);
+            element.className = arr.join(' ');
+        }
+    }
 
 }

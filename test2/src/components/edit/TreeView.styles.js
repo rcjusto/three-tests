@@ -16,7 +16,7 @@ export const LI_ELEMENT = {
     padding: 0
 };
 export const LI_FOLDER = {
-    margin: '6px 0 0 0',
+    margin: '0 0 6px 0',
     padding: 0
 };
 export const UNSELECTED = {
@@ -44,4 +44,7 @@ export const LINK_FILE = {
 };
 export const LINK_ADD = {
     marginRight: '4px'
+};
+export const SEPARATOR = {
+    height: '4px'
 };

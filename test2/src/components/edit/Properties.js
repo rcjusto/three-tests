@@ -17,6 +17,8 @@ import img_dots from '../../images/points.png';
 
 export default class Properties extends Component {
 
+    static RESET = '[reset]';
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -25,6 +27,13 @@ export default class Properties extends Component {
             textures: [],
             objects: []
         };
+
+        this.options = {
+            position: ["-10","-5","-2","-1","-0.5","-0.25","+0.25","+0.5","+1","+2","+5","+10"],
+            rotation: [Properties.RESET,"-90","-60","-45","-30","-15","-5","+5","+15","+30","+45","+60","+90"],
+            size: [0.75, 1, 1.5, 2, 2.5,3,3.5,4,4.5,5]
+        };
+
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handlePositionChange = this.handlePositionChange.bind(this);
         this.handleRotationChange = this.handleRotationChange.bind(this);
@@ -60,7 +69,7 @@ export default class Properties extends Component {
         if (element.url !== event.target.value) {
             element.url = event.target.value;
             this.setState({element});
-            this.props.model._triggerChange({tree: true, list:true});
+            this.props.model._triggerChange();
         }
     }
 
@@ -70,20 +79,32 @@ export default class Properties extends Component {
         this.setState({element});
     }
 
-    handlePositionChange(index, value) {
+    handlePositionChange(index, value, method = null) {
         let {element} = this.state;
-        element.position[index] = value;
+        if (method===DropDown.METHOD_SEL) {
+            element.position[index] += parseFloat(value);
+        } else {
+            element.position[index] = value;
+        }
         this.setState({element});
     }
 
-    handleRotationChange(index, value) {
+    handleRotationChange(index, value, method = null) {
         let {element} = this.state;
         if (!element.rotation) element.rotation = [0, 0, 0];
-        element.rotation[index] = value;
+        if (method===DropDown.METHOD_SEL) {
+            if (value===Properties.RESET) {
+                element.rotation[index] = 0;
+            } else {
+                element.rotation[index] += parseFloat(value) * Math.PI / 180;
+            }
+        } else {
+            element.rotation[index] = value;
+        }
         this.setState({element});
     }
 
-    handleSizeChange(index, value) {
+    handleSizeChange(index, value, method = null) {
         let {element} = this.state;
         if (!element.size) element.size = [0, 0, 0];
         element.size[index] = value;
@@ -164,7 +185,11 @@ export default class Properties extends Component {
                         </div>
                         {[0, 1, 2].map((ind) => {
                             return (<div key={ind} style={styles.COL_1_3}>
-                                <DropDown index={ind} value={element.position[ind] || 0} options={[]} onUpdated={this.handlePositionChange}/>
+                                <DropDown
+                                    index={ind}
+                                    value={element.position[ind] || 0}
+                                    options={this.options.position}
+                                    onUpdated={this.handlePositionChange}/>
                             </div>);
                         })}
                     </div>}
@@ -175,7 +200,11 @@ export default class Properties extends Component {
                         </div>
                         {[0, 1, 2].map((ind) => {
                             return (<div key={ind} style={styles.COL_1_3}>
-                                <DropDown index={ind} value={element.rotation ? element.rotation[ind] : 0} options={[]} onUpdated={this.handleRotationChange}/>
+                                <DropDown
+                                    index={ind}
+                                    value={element.rotation ? element.rotation[ind] : 0}
+                                    options={this.options.rotation}
+                                    onUpdated={this.handleRotationChange}/>
                             </div>);
                         })}
                     </div>}
@@ -186,10 +215,16 @@ export default class Properties extends Component {
                         </div>
                         {[0, 1, 2].map((ind) => {
                             return (<div key={ind} style={styles.COL_1_3}>
-                                <DropDown index={ind} value={element.size ? element.size[ind] : 0} options={[]} onUpdated={this.handleSizeChange}/>
+                                <DropDown
+                                    index={ind}
+                                    value={element.size ? element.size[ind] : 0}
+                                    options={this.options.size}
+                                    onUpdated={this.handleSizeChange}
+                                />
                             </div>);
                         })}
                     </div>}
+
                     {element && element.type !== MainModel.TYPE_JSON && element.type !== MainModel.TYPE_FOLDER &&
                     <div style={LABELED_ROW} className="clearfix">
                         <div style={styles.LABELED_ROW_LABEL}>
@@ -197,7 +232,7 @@ export default class Properties extends Component {
                         </div>
                         <div style={styles.COL_1_1}>
                             <InputGroup>
-                                <div className="form-control" style={styleTexture}/>
+                                <div onClick={this.handleTextureChange} className="form-control" style={styleTexture}/>
                                 <InputGroup.Button>
                                     <Button onClick={this.handleTextureChange}>
                                         <FontAwesomeIcon icon={faCaretDown}/>

@@ -94,7 +94,6 @@ export default class MainModel {
         const ids = this._getRecursiveNodes(treeNode).map(node => {
             return node.id
         });
-        console.log(ids);
         this._deleteTreeNode(treeNode);
         ids.forEach(id => {
             if (this.elements[id]) {
@@ -126,6 +125,15 @@ export default class MainModel {
         return this.tree;
     }
 
+    moveSelected(index, value) {
+        Object.values(this.elements)
+            .filter(el => {return el.selected})
+            .forEach(el => {
+                el.position[index] += value;
+            });
+        this._triggerChange();
+    }
+
     selectElement(id, deselectOthers = true) {
         if (deselectOthers) {
             Object.values(this.elements).forEach(n => {
@@ -141,7 +149,7 @@ export default class MainModel {
         if (this.folders[id]) {
             this.folders[id].selected = true;
         }
-        this._triggerChange({list:true,tree:true});
+        this._triggerChange();
     }
 
     toggleVisible(id) {

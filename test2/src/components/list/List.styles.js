@@ -1,3 +1,11 @@
+export const CONTAINER = {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+    paddingTop: '48px'
+};
+
 export const MODEL_IMAGE = {
     textAlign: 'center',
     width: '100%',

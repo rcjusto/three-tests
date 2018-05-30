@@ -8,7 +8,7 @@ class FloatingBar extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this.state = {import : ''};
+        this.state = {import: ''};
         this.textures = [];
         this.toggleBar = this.toggleBar.bind(this);
         this.handleImportChange = this.handleImportChange.bind(this);

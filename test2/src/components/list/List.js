@@ -4,9 +4,10 @@ import uuidv4 from 'uuid/v4';
 import {Link, withRouter} from "react-router-dom";
 import SnapShots from "../../services/SnapShots";
 import * as styles from "./List.styles";
-import {faTrash} from "@fortawesome/fontawesome-free-solid/index.es";
+import {faCopy, faPlusCircle, faTrash} from "@fortawesome/fontawesome-free-solid/index.es";
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {modalMessage} from "../edit/modals/ModalMessage";
+import Header from "../Header";
 
 class List extends Component {
 
@@ -15,7 +16,7 @@ class List extends Component {
         this.state = {
             data: [],
         };
-        this.addNewModel = this.addNewModel.bind(this);
+        this.onAction = this.onAction.bind(this);
     }
 
     componentDidMount() {
@@ -24,26 +25,45 @@ class List extends Component {
 
     loadModels() {
         ApiService.getAll().then(res => {
-            this.setState({data: res.map(el => {
+            this.setState({
+                data: res.map(el => {
                     return el;
-                })})
+                })
+            })
         });
     }
 
-    addNewModel() {
-        const json = {
-            id: uuidv4(),
-            name: 'new model',
-            desc: '',
-            data: {
-                tree: [],
-                elements: {},
-                folders: {}
-            }
-        };
-        ApiService.create(json)
+    onAction(action) {
+        if (action.id === 'create') {
+            const json = {
+                id: uuidv4(),
+                name: 'new model',
+                desc: '',
+                data: {
+                    tree: [],
+                    elements: {},
+                    folders: {}
+                }
+            };
+            ApiService.create(json)
+                .then((res) => {
+                    this.props.history.push('/' + res.id);
+                });
+        }
+    }
+    cloneModel(id) {
+        ApiService.getOne(id)
             .then((res) => {
-                this.props.history.push('/' + res.id);
+                const json = {
+                    id: uuidv4(),
+                    name: res.name + ' [copy]',
+                    desc: '',
+                    data: JSON.parse(JSON.stringify(res.data))
+                };
+                ApiService.create(json)
+                    .then((res) => {
+                        this.props.history.push('/' + res.id);
+                    });
             });
     }
 
@@ -62,31 +82,35 @@ class List extends Component {
     }
 
     render() {
-        return (<div className="container-fluid">
-            <div className="row">
-                <div className="col-sm-8">
-                    <h2>Models</h2>
+        return (<div style={styles.CONTAINER}>
+            <Header title={'Models'}  actions={[{id: 'create', label: 'Create new Model', icon: faPlusCircle}]} onAction={this.onAction}/>
+            <div className="container-fluid" style={{height:'100%',position:'relative',overflow:'auto',padding:'20px'}}>
+                <div className="row">
+                    {this.state.data.map((el, ind) => {
+                        const styleImg = JSON.parse(JSON.stringify(styles.MODEL_IMAGE));
+                        styleImg.backgroundImage = 'url(' + SnapShots.getURL(el.id) + ')';
+                        return (<div key={ind} className="col-sm-3">
+                            <div style={styles.ITEM_CONTAINER}>
+                                <Link to={{pathname: '/' + el.id}} style={styleImg}/>
+                                <a href="/" style={styles.LINK_DELETE} onClick={(e) => {
+                                    e.preventDefault();
+                                    this.delModel(el.id)
+                                }}>
+                                    <FontAwesomeIcon icon={faTrash}/>
+                                </a>
+                                <a href="/" style={styles.LINK_DELETE} onClick={(e) => {
+                                    e.preventDefault();
+                                    this.cloneModel(el.id)
+                                }}>
+                                    <FontAwesomeIcon icon={faCopy}/>
+                                </a>
+                                <Link to={{pathname: '/' + el.id}} style={styles.MODEL_NAME} className="no-underline">
+                                    {el.name}
+                                </Link>
+                            </div>
+                        </div>)
+                    })}
                 </div>
-                <div className="col-sm-4 text-right">
-                    <button onClick={this.addNewModel} className="btn btn-primary" style={{marginTop:'20px'}}>CREATE NEW MODEL</button>
-                </div>
-            </div>
-            <div className="row">
-                {this.state.data.map((el,ind) => {
-                    const styleImg = JSON.parse(JSON.stringify(styles.MODEL_IMAGE));
-                    styleImg.backgroundImage = 'url('+SnapShots.getURL(el.id)+')';
-                    return (<div key={ind} className="col-sm-3">
-                        <div style={styles.ITEM_CONTAINER}>
-                            <Link to={{pathname: '/' + el.id}} style={styleImg} />
-                            <a href="/" style={styles.LINK_DELETE} onClick={(e)=>{e.preventDefault();this.delModel(el.id)}}>
-                                <FontAwesomeIcon icon={faTrash} />
-                            </a>
-                            <Link to={{pathname: '/' + el.id}} style={styles.MODEL_NAME} className="no-underline">
-                                {el.name}
-                            </Link>
-                        </div>
-                    </div>)
-                })}
             </div>
         </div>)
     }

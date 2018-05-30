@@ -55,6 +55,9 @@ html, body, #root {
 .block-title .dropdown button, .block-title .dropdown.open button {
     color:#ffffff;
 }
+.dropdown-menu {
+    min-width: 80px;
+}
 .dropdown-menu a {
     color: #333333 !important;
 }
@@ -62,7 +65,7 @@ html, body, #root {
     background-color: #eeeeee;
 }
 .no-underline:hover {
-    text-transform: none;
+    text-decoration: none;
 }
 .properties-block .form-control {
     padding-top: 1px;
@@ -73,4 +76,17 @@ html, body, #root {
 }
 h4.modal-title {
     font-size: 16pt;
+}
+.input-dd .btn {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.input-dd .dropdown-menu > li > a {
+    text-align: right;
+}
+.drop-here {
+    border-bottom: 2px solid #000000!important;
+}
+.header-action:hover {
+    background-color: #204d74;
 }
