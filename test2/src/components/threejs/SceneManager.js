@@ -74,7 +74,7 @@ export default (canvas, callbacks) => {
     }
 
     function addSceneSubject(element) {
-        new SceneSubject(scene, element, textures, jsonObjects).then(subject => {
+        new SceneSubject(element, textures, jsonObjects).then(subject => {
             scene.add(subject.mesh);
             subject.update();
             sceneSubjects.push(subject);
@@ -130,10 +130,27 @@ export default (canvas, callbacks) => {
     }
 
     function getCameraAxis() {
-        const v = [camera.position.x - controls.target.x,camera.position.y - controls.target.y, camera.position.z - controls.target.z];
+        const v = [camera.position.x - controls.target.x, camera.position.y - controls.target.y, camera.position.z - controls.target.z];
         if (v[0] >= v[1] && v[0] >= v[2]) return 'X';
         else if (v[1] >= v[0] && v[1] >= v[2]) return 'Y';
         else return 'Z';
+    }
+
+    function sceneToJSON() {
+        if (sceneSubjects.length) {
+            let singleGeometry = new THREE.Geometry();
+
+            for (let i = 0; i < sceneSubjects.length; i++) {
+                const mesh = sceneSubjects[i].mesh;
+                mesh.updateMatrix();
+                singleGeometry.merge(mesh.geometry, mesh.matrix);
+            }
+
+            const group = new THREE.Mesh(singleGeometry, sceneSubjects[0].mesh.material);
+            return group.toJSON();
+        } else {
+            return null;
+        }
     }
 
     return {
@@ -142,6 +159,7 @@ export default (canvas, callbacks) => {
         updateSceneSubjects,
         addSceneSubject,
         getSnapShot,
-        getCameraAxis
+        getCameraAxis,
+        sceneToJSON
     }
 }

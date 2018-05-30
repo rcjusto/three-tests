@@ -24,6 +24,10 @@ export default class ThreeContainer extends Component {
         return this.three.getCameraAxis();
     }
 
+    sceneToJSON() {
+        return this.three.sceneToJSON();
+    }
+
     render () {
         return (
             <div style={{height: '100%'}} ref={element => this.threeRootElement = element} />

@@ -48,6 +48,10 @@ export default (containerElement, onElementClicked) => {
         return sceneManager.getCameraAxis()
     }
 
+    function sceneToJSON() {
+        return sceneManager.sceneToJSON()
+    }
 
-    return {updateData, addData, getSnapShot, getCameraAxis}
+
+    return {updateData, addData, getSnapShot, getCameraAxis, sceneToJSON}
 }

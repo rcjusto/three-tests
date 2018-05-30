@@ -3,7 +3,7 @@ import ThreeContainer from "../threejs/ThreeContainer";
 import * as styles from "./Editor.styles";
 import FloatingBar from "./FloatingBar";
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import {faCamera, faDownload, faExpandArrowsAlt, faImages, faLongArrowAltLeft, faTh} from "@fortawesome/fontawesome-free-solid/index.es";
+import {faCamera, faDownload, faExpandArrowsAlt, faImages, faLongArrowAltLeft, faTh, faUpload} from "@fortawesome/fontawesome-free-solid/index.es";
 import ApiService from "../../services/Api";
 import MainModel from "../../models/Main";
 import {modalEditPage} from "./modals/ModalEditPage";
@@ -14,6 +14,8 @@ import Textures from "../../services/Textures";
 import {modalImportText} from "./modals/ModalImportText";
 import {modalMessage} from "./modals/ModalMessage";
 import Header from "../Header";
+import {modalExportMesh} from "./modals/ModalExportMesh";
+import JSONModels from "../../services/JSONModels";
 
 class Editor extends Component {
 
@@ -176,6 +178,23 @@ class Editor extends Component {
         })
     }
 
+    exportSelectedFolder() {
+        const exp = this.threeContainer.sceneToJSON();
+        if (exp!=null) {
+            modalExportMesh({
+                onConfirm: (name) => {
+                    const data = JSON.stringify(exp);
+                    JSONModels.put(name, data).then(() => {
+                        this.model._triggerChange();
+                        modalMessage({
+                            message: 'Model successfully exported'
+                        });
+                    });
+                }
+            })
+        }
+    }
+
     _importNode(node, parentId) {
         if (node.children) {
             const el = this.model.addNewFolder(node.name, parentId);
@@ -231,6 +250,12 @@ class Editor extends Component {
                                 this.importOldFormat();
                             }} title="Import old JSON format" style={styles.BOTTOM_LINK}>
                                 <FontAwesomeIcon icon={faDownload}/>
+                            </a>
+                            <a href="/" onClick={(e) => {
+                                e.preventDefault();
+                                this.exportSelectedFolder();
+                            }} title="Export Selected" style={styles.BOTTOM_LINK}>
+                                <FontAwesomeIcon icon={faUpload}/>
                             </a>
                         </div>
                     </div>

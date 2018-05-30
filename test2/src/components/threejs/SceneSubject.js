@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Main from '../../models/Main';
 
-export default function SceneSubject(scene, element, textures, jsonObjects) {
+export default function SceneSubject(element, textures, jsonObjects) {
     return new Promise((resolve, reject) => {
 
         const color = element.selected ? 0xff0000 : 0xffffff;
@@ -31,16 +31,22 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
         if (element.type === Main.TYPE_JSON && element.url && element.url.length>0) {
 
             jsonObjects.getJsonObject(element.url)
-                .then(data => {
+                .then(res => {
+                    const data = res.obj;
+                    if (res.type==='json') {
+                        let materials = data.materials;
+                        if (element.selected) {
+                            materials = new THREE.MeshStandardMaterial({flatShading: true, color: color});
+                        }
 
-                    let materials = data.materials;
-                    if (element.selected) {
-                        materials = new THREE.MeshStandardMaterial({flatShading: true, color: color});
+                        mesh = new THREE.Mesh(data.geometry, materials);
+                        mesh.elementID = element.id;
+                        resolve({mesh: mesh, update: update})
+                    } else {
+                        mesh = data.clone();
+                        mesh.elementID = element.id;
+                        resolve({mesh: mesh, update: update})
                     }
-
-                    mesh = new THREE.Mesh(data.geometry, materials);
-                    mesh.elementID = element.id;
-                    resolve({mesh: mesh, update: update})
                 })
                 .catch(err => {
                     reject(err);
@@ -54,15 +60,14 @@ export default function SceneSubject(scene, element, textures, jsonObjects) {
             let geometry;
             switch (element.type.toLowerCase()) {
                 case Main.TYPE_CYLINDER:
-                    geometry = new THREE.CylinderBufferGeometry(w, w, h, 128);
+                    geometry = new THREE.CylinderGeometry(w, w, h, 128);
                     break;
                 case Main.TYPE_SPHERE:
-                    geometry = new THREE.SphereBufferGeometry(w, 128, 128);
+                    geometry = new THREE.SphereGeometry(w, 128, 128);
                     break;
                 default:
-                    geometry = new THREE.BoxBufferGeometry(w,h,d);
+                    geometry = new THREE.BoxGeometry(w,h,d);
                     break;
-
             }
 
             if (element.texture) {
