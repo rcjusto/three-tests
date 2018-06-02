@@ -130,10 +130,12 @@ export default (canvas, callbacks) => {
     }
 
     function getCameraAxis() {
-        const v = [camera.position.x - controls.target.x, camera.position.y - controls.target.y, camera.position.z - controls.target.z];
-        if (v[0] >= v[1] && v[0] >= v[2]) return 'X';
-        else if (v[1] >= v[0] && v[1] >= v[2]) return 'Y';
-        else return 'Z';
+        const dX = camera.position.x - controls.target.x;
+        const dY = camera.position.y - controls.target.y;
+        const dZ = camera.position.z - controls.target.z;
+        if (Math.abs(dX) >= Math.abs(dY) && Math.abs(dX) >= Math.abs(dZ)) return  dX > 0 ? 'X' : '-X';
+        else if (Math.abs(dY) >= Math.abs(dX) && Math.abs(dY) >= Math.abs(dZ)) return dY>0 ? 'Y' : '-Y';
+        else return dZ>0 ? 'Z' : '-Z';
     }
 
     function sceneToJSON() {

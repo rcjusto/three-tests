@@ -97,25 +97,47 @@ class Editor extends Component {
 
     handleKeyDown(e) {
         if (this.threeContainer != null && (e.ctrlKey || e.shiftKey)) {
-            let x, y;
-            switch (this.threeContainer.getCameraAxis()) {
+            let x, y, sx = 1, sy = 1;
+            const axis  = this.threeContainer.getCameraAxis();
+            console.log(axis);
+            switch (axis) {
                 case 'Z':
+                    x = 0;
+                    y = 1;
+                    sx = -1;
+                    break;
+                case '-Z':
                     x = 0;
                     y = 1;
                     break;
                 case 'Y':
                     x = 0;
                     y = 2;
+                    sx = -1;
+                    sy = -1;
+                    break;
+                case '-Y':
+                    x = 0;
+                    y = 2;
+                    break;
+                case 'X':
+                    x = 2;
+                    y = 1;
+                    break;
+                case '-X':
+                    x = 2;
+                    y = 1;
+                    sx = -1;
                     break;
                 default:
                     x = 2;
                     y = 1;
             }
             const step = e.ctrlKey ? .25 : 1;
-            if (e.code === 'ArrowLeft') this.model.moveSelected(x, -step);
-            if (e.code === 'ArrowRight') this.model.moveSelected(x, step);
-            if (e.code === 'ArrowUp') this.model.moveSelected(y, step);
-            if (e.code === 'ArrowDown') this.model.moveSelected(y, -step);
+            if (e.code === 'ArrowLeft') this.model.moveSelected(x, sx * step);
+            if (e.code === 'ArrowRight') this.model.moveSelected(x, -sx * step);
+            if (e.code === 'ArrowUp') this.model.moveSelected(y, sy * step);
+            if (e.code === 'ArrowDown') this.model.moveSelected(y, -sy * step);
         }
     }
 
