@@ -22,7 +22,7 @@ export default class CutList extends Component {
 
     generateList(model) {
         const list = {};
-        JSON.parse(JSON.stringify(Object.values(model.elements)))
+        JSON.parse(JSON.stringify(Object.values(model.getElementList())))
             .filter(el => {
                 return el.type === MainModel.TYPE_BOX && !!el.visible
             })
